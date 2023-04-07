@@ -21,9 +21,7 @@ const settings = {
   const lend = () => {
     const {address, isConnected} = useAccount();
 
-  const maxLoanBerries = 500;
-  let maxLoanSmols = 500 ;
-  const MAX_LOAN_LENS = 210;
+  const MAX_LOAN_LENS = 201;
   let decayRate = .5;
 
   const FLOOR_ADDRESS ="0x0cD08bd0df3EFB1A5B12ae7A73C31E477f899278";
@@ -75,7 +73,7 @@ const settings = {
       }); 
       
     // ------------------ WRITE  CONTRACT ----------------------------------------
-   //  function to call contract approve lendingcontract to use Blueberry NFT  
+   //  function to call contract approve lendingcontract to use LENS NFT  
    const { config: approveLending, error: adminError } = usePrepareContractWrite({
     ...contractConfig,
     functionName: "approve",
@@ -194,17 +192,6 @@ const isApproved = txSuccess;
   };
 
 
-  const handleChange = (value) => {
-    setCollectionNumber(value)
-    if(value==0)
-     {setMaxLoanString("Maximum loan size for GMX Blueberries is " + maxLoanBerries + " DAI")
-      setIsBerry(true)}
-    else{
-      setMaxLoanString("Maximum loan size for Smol Brains is " + maxLoanSmols + " DAI") 
-      setIsBerry(false)
-    }  
-  };
-
    // calls the approve() function to transfer NFT to lend contract
    const approve = async (event, id) =>{ 
     setNFTid(id)
@@ -258,8 +245,8 @@ const isApproved = txSuccess;
           <div className="flex gap-5 bg-base-200 bg-opacity-80 z-0 p-7 rounded-2xl shadow-lg">  
       <div suppressHydrationWarning={true}>
  <h1>LENS Lending (beta)</h1>
- Interest rate on loans is 5% per annum, approx 6 cents a day on $500 loan.
- If you pay back a 28 day loan in 1 day, you only pay 1 days interest.<br />
+ Interest rate on loans is 3% per annum, approx 2 cents a day on $200 loan.
+ If you pay back a 30 day loan in 1 day, you only pay 1 days interest.<br />
  { displayBalance && ( <div>Dai available for lending ${Number(ethers.utils.formatUnits(vaultBalance, 18)).toFixed(0)} </div>)}
 <br />
 <button className="button" onClick={() => getLens()}>Display My LENS NFT</button>  
@@ -274,7 +261,7 @@ const isApproved = txSuccess;
 <tr><th colspan="2" >{<img src= {item.image} style={{borderRadius:10}}  />}</th></tr> 
 <tr><th>Nft ID : </th><th><InputNumber min={1} max={13000} defaultValue={item.id} onChange={setNFTid} style={{ width: 200 }} /></th></tr>
 <tr><th>Loan Duration : </th><th>
- <InputNumber min={1} max={28} placeholder={"Loan Duration"} defaultValue={1} onChange={changeDuration} style={{ width: 200 }} />
+ <InputNumber min={1} max={30} placeholder={"Loan Duration"} defaultValue={1} onChange={changeDuration} style={{ width: 200 }} />
  </th></tr>
  <tr><th>Loan Amount : </th><th>
  <InputNumber min={100} max={MAX_LOAN_LENS} step={1} value={loanAmount} onChange={changeLoan} style={{ width: 200 }} />
@@ -282,7 +269,7 @@ const isApproved = txSuccess;
  <tr><th colspan="2" >
 
  {isConnected && isApproved && (
- <button shape="round" onClick={(event) => callLend(event, NFTid)} style={{ width: 140}}>
+ <button className="button" onClick={(event) => callLend(event, NFTid)} style={{ width: 140}}>
   Lend
  </button>  
  )}

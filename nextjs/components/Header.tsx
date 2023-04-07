@@ -91,8 +91,8 @@ export const Header = () => {
         </div>
         <div className="hidden lg:flex items-center gap-2 ml-4 mr-6">
           <div className="flex flex-col">
-            <span className="font-bold leading-tight">Scaffold-eth</span>
-            <span className="text-xs">Ethereum dev stack</span>
+            <span className="font-bold leading-tight">Floor 101</span>
+            <span className="text-xs">NFT lending</span>
           </div>
         </div>
         <ul className="hidden lg:flex lg:flex-nowrap menu menu-horizontal px-1 gap-2">{navLinks}</ul>

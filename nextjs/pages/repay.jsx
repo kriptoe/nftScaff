@@ -15,7 +15,7 @@ const settings = {
   apiKey: "yLWScHSkzCG2R-CTJwDr3ZgHu5ij3Mis",   // apiKey: "lIguUBlNorQF0qVOvhyXc57Tkgk3JynZ", // Replace with your Alchemy API Key.
     network: Network.MATIC_MAINNET,        // network: Network.ARB_MAINNET, // Replace with your network.
   };
-  
+  console.log(process.env) // remove this after you've confirmed it is working
   const alchemy = new Alchemy(settings);
 
   const repay = () => {
@@ -146,7 +146,6 @@ const isApproved = txSuccess;
       <div suppressHydrationWarning={true}>
  <h1>REPAY LOAN</h1><br />
  NFT ID : <input type="number" value={loanID} onChange={setNFTid} style={{ width: 200 }} />
- 
  {amount}
   <br />
   {isConnected  && !isApproved && (
@@ -158,7 +157,6 @@ const isApproved = txSuccess;
   {!isDaiLoading && !isMintStarted && 'Approve Repayment'}
  </button>  
  )}
-
 
  {isConnected  && isApproved && (
   <button className="button" onClick={(event) => repay(event, loanID)} style={{ width: 200}}>REPAY LOAN

@@ -1,5 +1,5 @@
 import Head from "next/head";
-import type { NextPage } from "next";
+import { NextPage } from "next";
 import { ContractData } from "~~/components/example-ui/ContractData";
 import { ContractInteraction } from "~~/components/example-ui/ContractInteraction";
 //import {useScaffoldContractWrite} from "~~/hooks/scaffold-eth/useScaffoldContractWrite";
@@ -12,8 +12,8 @@ import floorContract from "../src/floorLend.json"; // Raw ABI import (pulled fro
 
 const { ethers } = require("ethers");
 
-const vault: NextPage = () => {
-
+const vault = () => {
+  
     const {address, isConnected} = useAccount();
 
     const DAI_ADDRESS = "0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063";
@@ -50,7 +50,7 @@ const vault: NextPage = () => {
     ...contractConfig,
     functionName: "approve",
     args: [FLOOR_ADDRESS, ethers.utils.parseEther(depositAmount + "")], //hardcoded address can create a state variable
-    onError(error: any) {
+    onError(error) {
       console.log("Error", error);
     },
   });
@@ -62,11 +62,11 @@ const vault: NextPage = () => {
   } = useContractWrite(approveLending);
 
 
-  const { config: deposit_Dai, error: adminErrordepositDai } = usePrepareContractWrite({
+  const { config: depositdaivault, error: adminErrordepositDai } = usePrepareContractWrite({
     ...contractConfig2,
     functionName: "deposit",
     args: [ethers.utils.parseEther(depositAmount + "")], //hardcoded address can create a state variable
-    onError(error: any) {
+    onError(error) {
       console.log("Error", error);
     },
   });
@@ -75,14 +75,14 @@ const vault: NextPage = () => {
     write: depositDai, 
     isLoading: isDepositLoading,
     isSuccess: isDepositStarted,  
-  } = useContractWrite(deposit_Dai);
+  } = useContractWrite(depositdaivault);
 
-  /* Write contract call
+ /*  Write contract call
   const { writeAsync: depositDai, isLoading: isloadingDeposit } = useScaffoldContractWrite({
     contractName: "FloorLendingV2",
     functionName: "deposit",
     args:[ethers.utils.parseEther(depositAmount + "")],  
-  });  */
+  });   */
 
   // Write contract call
   const { writeAsync: withdraw, isLoading: isloadingWithdraw } = useScaffoldContractWrite({
@@ -93,7 +93,7 @@ const vault: NextPage = () => {
 
    // Event contract call  ------------------------------EVENT LISTENERS --------------------
 
-  useContractEvent({
+   useScaffoldEventSubscriber({
     address: FLOOR_ADDRESS,
     abi: floorContract,
     eventName: 'vaultDepositEvent',
@@ -112,7 +112,7 @@ const vault: NextPage = () => {
     },
   });
 
-  const approveVault = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, nftNumber: number) =>{ 
+  const approveVault = async () =>{ 
     console.log("approval amount " , ethers.utils.parseEther(depositAmount + ""))
     try{   
       approveDai?.()
@@ -120,11 +120,13 @@ const vault: NextPage = () => {
   }
 
   const depositVault = async () =>{ 
+    console.log("deposit dai" )     
+    depositDai?.() 
     try{  
-      console.log("deposit dai" )     
-      depositDai?.()
+
     }catch(e) {alert (e); console.log(e);}
   }
+
   const withdrawVault = async () =>{ 
     setWithdrawAmount(vaultBalance)
     console.log("withdrawal amount " , vaultBalance)   
@@ -163,8 +165,8 @@ const isApproved2 = txDepositSuccess;
               onChange={e => setDepositAmount(e.target.value)}
             />
 
-{isConnected  && !isApproved && (
- <button className="button" onClick={(event) => approveVault(event, depositAmount)} disabled={!approveDai || isDaiLoading || isMintStarted}
+{ !isApproved && (
+ <button className="button" onClick={() => approveVault()} disabled={!approveDai || isDaiLoading || isMintStarted}
    data-mint-loading={isDaiLoading}
    data-mint-started={isMintStarted}
  >{isDaiLoading && "Waiting for Approval"}
@@ -173,7 +175,7 @@ const isApproved2 = txDepositSuccess;
  </button>  
  )}
 
-{isConnected && isApproved && !isApproved2 &&(
+{isApproved && !isApproved2 &&(
   <button  className="button" onClick={() => depositVault()}
   data-deposit-loading={isDepositLoading}  
   data-deposit-started={isDepositStarted}

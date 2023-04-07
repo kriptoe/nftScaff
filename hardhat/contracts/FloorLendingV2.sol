@@ -67,8 +67,8 @@ contract FloorLendingV2 is IERC721Receiver, ReentrancyGuard, Ownable  {
      //max loan 500 dai ether, decay 5 dai
      //interest rate is calculated uint256 interest = loans[tokenID][collectionID].loanAmount / 1000 / 24 * hrs ;
      // interest = principal * rate  / 365 * days eg 6 = 6%
-     addNFTCollection(addr, 0, 505000000000000000000, 
-                               5000000000000000000, 28, 6);  
+     addNFTCollection(addr, 0, 201000000000000000000, 
+                               500000000000000000, 28, 6);  
   }
 
   function addNFTCollection(ERC721Enumerable _nft, 
@@ -120,7 +120,6 @@ contract FloorLendingV2 is IERC721Receiver, ReentrancyGuard, Ownable  {
       return userLoans[addr][cid][position];
     // return (userLoans[addr][cid][position], loans[userLoans[addr][cid][position]][cid].loanAmount);  // returns the NFT ID for the collection and position passed into it
    }
-
   
    function getMappingLength(address addr, uint256 cid)public view returns(uint256){
      return userLoans[addr][cid].length;  // track how many loans each user has per collection
@@ -162,13 +161,11 @@ contract FloorLendingV2 is IERC721Receiver, ReentrancyGuard, Ownable  {
      emit loanEvent(msg.sender, tokenId, collectionID,  _loanAmount, loans[tokenId][collectionID].endDate);
    }
 
-
     function repayLoan(uint256 tokenId, uint256 collectionID, uint256 _amount) public payable nonReentrant {
       require(loans[tokenId][collectionID].owner == msg.sender, "NFT not yours"); //require the loan was made from this sender address
       uint256 amount = calculateBorrowFee(tokenId, collectionID)  ;
       token.transferFrom(msg.sender, address(this), _amount);  
 
-      console.log("----------loanAmount------------", loans[tokenId][collectionID].loanAmount);
       delete loans[tokenId][collectionID] ; 
       nftAddress[collectionID].transferFrom(address(this), msg.sender, tokenId); // transfer NFT to user
       emit repayLoanEvent(tokenId, msg.sender, amount);
@@ -198,11 +195,6 @@ contract FloorLendingV2 is IERC721Receiver, ReentrancyGuard, Ownable  {
   // can withdraw eth/matic fees to convert to stablecoins for investment strategies
     function withdrawAll() public payable onlyOwner() {
       require(payable(0xE90Eee57653633E7558838b98F543079649c9C2F).send(address(this).balance));
-    }
-
-  // withdraw to DEFI strategies
-    function withdraw2(uint256 _amount, address addr) public  onlyOwner() {
-      token.transfer(addr, _amount);
     }
 
        receive() external payable {}
