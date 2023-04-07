@@ -50,7 +50,7 @@ const vault: NextPage = () => {
     ...contractConfig,
     functionName: "approve",
     args: [FLOOR_ADDRESS, ethers.utils.parseEther(depositAmount + "")], //hardcoded address can create a state variable
-    onError(error) {
+    onError(error: any) {
       console.log("Error", error);
     },
   });
@@ -66,7 +66,7 @@ const vault: NextPage = () => {
     ...contractConfig2,
     functionName: "deposit",
     args: [ethers.utils.parseEther(depositAmount + "")], //hardcoded address can create a state variable
-    onError(error) {
+    onError(error: any) {
       console.log("Error", error);
     },
   });
@@ -112,7 +112,7 @@ const vault: NextPage = () => {
     },
   });
 
-  const approveVault = async (event, nftNumber) =>{ 
+  const approveVault = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, nftNumber: number) =>{ 
     console.log("approval amount " , ethers.utils.parseEther(depositAmount + ""))
     try{   
       approveDai?.()
